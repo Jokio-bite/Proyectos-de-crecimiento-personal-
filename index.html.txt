@@ -1,0 +1,459 @@
+!DOCTYPE html
+html lang=es
+head
+    meta charset=UTF-8
+    meta name=viewport content=width=device-width, initial-scale=1.0
+    titleInmoOps Pro - Control de Gestióntitle
+    script src=httpscdn.tailwindcss.comscript
+    link href=httpscdnjs.cloudflare.comajaxlibsfont-awesome6.0.0cssall.min.css rel=stylesheet
+    style
+        @import url('httpsfonts.googleapis.comcss2family=Interwght@300;400;500;600;700&display=swap');
+        body { font-family 'Inter', sans-serif; background-color #f1f5f9; }
+        .kanban-column { min-height 400px; transition all 0.3s ease; }
+        .card-task { cursor grab; transition transform 0.2s; }
+        .card-taskactive { cursor grabbing; transform scale(1.02); }
+        .glass-nav { background rgba(30, 41, 59, 0.95); backdrop-filter blur(8px); }
+        .deep-work-bg { background repeating-linear-gradient(45deg, #fffbeb, #fffbeb 10px, #fef3c7 10px, #fef3c7 20px); }
+    style
+head
+body class=min-h-screen pb-12
+
+    !-- Navegación Superior --
+    nav class=glass-nav text-white sticky top-0 z-50 shadow-xl no-print
+        div class=max-w-7xl mx-auto px-4
+            div class=flex justify-between h-16 items-center
+                div class=flex items-center space-x-3
+                    div class=bg-blue-600 p-2 rounded-lg
+                        i class=fas fa-chart-line text-xl text-whitei
+                    div
+                    span class=text-xl font-black tracking-tighter uppercase italicInmoOpsspan class=text-blue-400Prospanspan
+                div
+                
+                div class=hidden mdflex space-x-1
+                    button onclick=showSection('dashboard') class=px-4 py-2 rounded-md hoverbg-slate-700 transition flex items-centeri class=fas fa-home mr-2 text-smi Panelbutton
+                    button onclick=showSection('actividades') class=px-4 py-2 rounded-md hoverbg-slate-700 transition flex items-centeri class=fas fa-tasks mr-2 text-smi Actividadesbutton
+                    button onclick=showSection('finanzas') class=px-4 py-2 rounded-md hoverbg-slate-700 transition flex items-centeri class=fas fa-wallet mr-2 text-smi Cobrosbutton
+                    button onclick=showSection('config') class=px-4 py-2 rounded-md hoverbg-slate-700 transition flex items-centeri class=fas fa-cog mr-2 text-smi Configbutton
+                div
+
+                div id=clock class=text-sm font-mono text-blue-300 bg-slate-800 px-3 py-1 rounded-full border border-slate-700000000div
+            div
+        div
+    nav
+
+    main class=max-w-7xl mx-auto px-4 py-6 smpx-6 lgpx-8
+        
+        !-- SECCIÓN 1 DASHBOARD INTELIGENTE --
+        section id=dashboard class=space-y-6
+            !-- Resumen de Alertas --
+            div id=alertZone class=hidden bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm animate-pulse
+                div class=flex
+                    i class=fas fa-exclamation-triangle text-amber-500 mt-1 mr-3i
+                    div
+                        p class=font-bold text-amber-800Alerta de Contingencia Día 10p
+                        p class=text-sm text-amber-700El próximo hito de informes cae en fin de semana. Prepara los envíos hoy.p
+                    div
+                div
+            div
+
+            div class=grid grid-cols-1 mdgrid-cols-4 gap-4
+                div class=bg-white p-5 rounded-2xl shadow-sm border border-slate-200
+                    p class=text-slate-500 text-xs font-bold uppercase tracking-widerProgreso Mensualp
+                    div class=flex items-end justify-between mt-2
+                        h4 id=monthDayDisplay class=text-3xl font-black text-slate-800Día 1h4
+                        span class=text-blue-600 font-bold id=monthPercent0%span
+                    div
+                    div class=w-full bg-slate-100 rounded-full h-1.5 mt-3
+                        div id=monthProgressBar class=bg-blue-600 h-1.5 rounded-full transition-all duration-1000div
+                    div
+                div
+                
+                div class=bg-white p-5 rounded-2xl shadow-sm border border-slate-200
+                    p class=text-slate-500 text-xs font-bold uppercase tracking-widerDINAPI Statusp
+                    div id=dinapiStatusCard class=mt-2 flex items-center
+                        i class=fas fa-gavel text-2xl mr-3 text-slate-400i
+                        span class=font-semibold text-slate-700Esperando Juevesspan
+                    div
+                div
+
+                div class=bg-white p-5 rounded-2xl shadow-sm border border-slate-200
+                    p class=text-slate-500 text-xs font-bold uppercase tracking-widerRenta Temporalp
+                    div id=temporalStatusCard class=mt-2 flex items-center
+                        i class=fas fa-key text-2xl mr-3 text-slate-400i
+                        span class=font-semibold text-slate-700Próxima Auditoría Marspan
+                    div
+                div
+
+                div class=bg-white p-5 rounded-2xl shadow-sm border border-slate-200
+                    p class=text-slate-500 text-xs font-bold uppercase tracking-widerTareas Pendientesp
+                    div class=mt-2 flex items-center
+                        i class=fas fa-list-check text-2xl mr-3 text-blue-500i
+                        span id=taskCount class=text-2xl font-black text-slate-8000span
+                    div
+                div
+            div
+
+            !-- Calendario Operativo --
+            div class=bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden
+                div class=p-4 bg-slate-50 border-b flex justify-between items-center
+                    h2 class=font-bold text-slate-800 italicCronograma Maestro de Operacionesh2
+                    span class=text-xs font-medium text-slate-500Semana Estándar de Gestiónspan
+                div
+                div class=grid grid-cols-5 divide-x divide-slate-100 text-center
+                    div class=p-4 font-bold text-xs uppercase text-slate-400Lunesdiv
+                    div class=p-4 font-bold text-xs uppercase text-slate-400Martesdiv
+                    div class=p-4 font-bold text-xs uppercase text-slate-400Miércolesdiv
+                    div class=p-4 font-bold text-xs uppercase text-slate-400Juevesdiv
+                    div class=p-4 font-bold text-xs uppercase text-slate-400Viernesdiv
+                div
+                div class=grid grid-cols-5 divide-x divide-slate-100 min-h-[120px]
+                    div class=p-3 text-[11px] space-y-2
+                        div class=p-2 bg-red-50 text-red-700 rounded border border-red-100 font-boldCobros y Facturacióndiv
+                        div class=p-2 bg-slate-50 text-slate-600 roundedRRSS Contenidosdiv
+                    div
+                    div class=p-3 text-[11px] space-y-2 deep-work-bg
+                        div class=p-2 bg-amber-50 text-amber-800 rounded border border-amber-200 font-boldDEEP WORK Informesdiv
+                        div class=p-2 bg-indigo-600 text-white rounded shadow-smAudit. Renta Temporaldiv
+                    div
+                    div class=p-3 text-[11px] space-y-2
+                        div class=p-2 bg-blue-50 text-blue-700 rounded border border-blue-100 font-boldCoord. Técnicos  Zubadiv
+                        div class=p-2 bg-slate-50 text-slate-600 roundedGestión Proveedoresdiv
+                    div
+                    div class=p-3 text-[11px] space-y-2
+                        div class=p-2 bg-amber-50 text-amber-800 rounded border border-amber-200 font-boldDEEP WORK Informesdiv
+                        div class=p-2 bg-emerald-50 text-emerald-700 rounded border border-emerald-100 font-bold italic font-blackDINAPI Auditoríadiv
+                    div
+                    div class=p-3 text-[11px] space-y-2
+                        div class=p-2 bg-emerald-600 text-white rounded shadow-sm font-bold uppercaseDINAPI Ingresosdiv
+                        div class=p-2 bg-indigo-600 text-white rounded shadow-smAudit. Renta Temporaldiv
+                    div
+                div
+            div
+        section
+
+        !-- SECCIÓN 2 TABLERO DE ACTIVIDADES (KANBAN) --
+        section id=actividades class=hidden space-y-6
+            div class=flex justify-between items-center
+                h2 class=text-2xl font-black text-slate-800Tablero de Operacionesh2
+                button onclick=openTaskModal() class=bg-blue-600 text-white px-4 py-2 rounded-lg font-bold shadow-lg hoverbg-blue-700 transition
+                    i class=fas fa-plus mr-2iNueva Actividad
+                button
+            div
+
+            div class=grid grid-cols-1 mdgrid-cols-3 gap-6 h-full
+                !-- Columna Pendiente --
+                div class=flex flex-col
+                    div class=flex items-center justify-between mb-4 px-2
+                        h3 class=font-black text-slate-600 uppercase text-xs tracking-widestPendienteh3
+                        span id=count-todo class=bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full font-bold0span
+                    div
+                    div id=col-todo ondrop=drop(event) ondragover=allowDrop(event) class=kanban-column space-y-3 p-2 bg-slate-20050 rounded-xl border-2 border-dashed border-slate-300
+                        !-- Tasks go here --
+                    div
+                div
+
+                !-- Columna En Proceso --
+                div class=flex flex-col
+                    div class=flex items-center justify-between mb-4 px-2
+                        h3 class=font-black text-blue-600 uppercase text-xs tracking-widestEn Ejecuciónh3
+                        span id=count-doing class=bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded-full font-bold0span
+                    div
+                    div id=col-doing ondrop=drop(event) ondragover=allowDrop(event) class=kanban-column space-y-3 p-2 bg-blue-5050 rounded-xl border-2 border-dashed border-blue-200
+                        !-- Tasks go here --
+                    div
+                div
+
+                !-- Columna Finalizado --
+                div class=flex flex-col
+                    div class=flex items-center justify-between mb-4 px-2
+                        h3 class=font-black text-emerald-600 uppercase text-xs tracking-widestCompletadoh3
+                        span id=count-done class=bg-emerald-100 text-emerald-600 text-xs px-2 py-0.5 rounded-full font-bold0span
+                    div
+                    div id=col-done ondrop=drop(event) ondragover=allowDrop(event) class=kanban-column space-y-3 p-2 bg-emerald-5050 rounded-xl border-2 border-dashed border-emerald-200
+                        !-- Tasks go here --
+                    div
+                div
+            div
+        section
+
+        !-- SECCIÓN 3 GESTIÓN DE COBROS --
+        section id=finanzas class=hidden space-y-6
+            div class=bg-white p-8 rounded-2xl shadow-sm border border-slate-200
+                h2 class=text-2xl font-black text-slate-800 mb-6Calculadora de Cobros Mensualesh2
+                div class=grid grid-cols-1 mdgrid-cols-2 gap-8
+                    div class=space-y-4
+                        div
+                            label class=block text-sm font-bold text-slate-700 mb-1Entidad  Inquilinolabel
+                            input type=text id=fin-entidad placeholder=Ej Zuba o Building Innovations class=w-full p-3 bg-slate-50 border rounded-xl outline-none focusring-2 focusring-blue-500
+                        div
+                        div
+                            label class=block text-sm font-bold text-slate-700 mb-1Monto de Alquiler  Serviciolabel
+                            input type=number id=fin-monto placeholder=0.00 class=w-full p-3 bg-slate-50 border rounded-xl outline-none focusring-2 focusring-blue-500
+                        div
+                        button onclick=addFinanceRecord() class=w-full bg-slate-800 text-white py-3 rounded-xl font-bold hoverbg-black transitionRegistrar Cobro Esperadobutton
+                    div
+                    div class=bg-slate-50 p-6 rounded-2xl border border-slate-200
+                        h3 class=font-bold text-slate-800 mb-4Resumen de Carterah3
+                        div id=financeList class=space-y-2 max-h-60 overflow-y-auto
+                            !-- Finance items --
+                        div
+                        div class=mt-4 pt-4 border-t border-slate-200 flex justify-between items-center
+                            span class=font-bold text-slate-500 uppercase text-xsTotal Proyectadospan
+                            span id=financeTotal class=text-xl font-black text-blue-600$ 0.00span
+                        div
+                    div
+                div
+            div
+        section
+
+    main
+
+    !-- MODAL PARA NUEVA ACTIVIDAD --
+    div id=taskModal class=hidden fixed inset-0 bg-slate-90060 backdrop-blur-sm z-[100] flex items-center justify-center p-4
+        div class=bg-white w-full max-w-md rounded-2xl shadow-2xl p-6
+            h3 class=text-xl font-black text-slate-800 mb-4Nueva Actividad Operativah3
+            div class=space-y-4
+                input type=text id=newTaskTitle placeholder=Título de la tarea... class=w-full p-3 border rounded-xl outline-none focusring-2 focusring-blue-500
+                select id=newTaskType class=w-full p-3 border rounded-xl outline-none bg-slate-50
+                    option value=cobroCobro  Facturaciónoption
+                    option value=legalDINAPI  Legaloption
+                    option value=obraObra  Técnicooption
+                    option value=temporalRenta Temporaloption
+                    option value=marketingMarketing  RRSSoption
+                select
+                div class=flex gap-2
+                    button onclick=closeTaskModal() class=flex-1 py-3 font-bold text-slate-500 hoverbg-slate-100 rounded-xl transitionCancelarbutton
+                    button onclick=createTask() class=flex-1 py-3 font-bold bg-blue-600 text-white rounded-xl shadow-lg hoverbg-blue-700 transitionCrearbutton
+                div
+            div
+        div
+    div
+
+    script
+         --- ESTADO DE LA APLICACIÓN ---
+        let state = {
+            tasks JSON.parse(localStorage.getItem('inmoOps_tasks'))  [],
+            finances JSON.parse(localStorage.getItem('inmoOps_finances'))  []
+        };
+
+         --- SISTEMA DE NAVEGACIÓN ---
+        function showSection(id) {
+            document.querySelectorAll('section').forEach(s = s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+         --- RELOJ Y ALERTAS DE TIEMPO ---
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+            
+             Actualizar Dashboard cada minuto
+            if (now.getSeconds() === 0) updateDashboardUI();
+        }
+        setInterval(updateClock, 1000);
+
+         --- GESTIÓN DE ACTIVIDADES (KANBAN) ---
+        function openTaskModal() { document.getElementById('taskModal').classList.remove('hidden'); }
+        function closeTaskModal() { document.getElementById('taskModal').classList.add('hidden'); }
+
+        function createTask() {
+            const title = document.getElementById('newTaskTitle').value;
+            const type = document.getElementById('newTaskType').value;
+            
+            if (title.trim()) {
+                const newTask = {
+                    id 'task-' + Date.now(),
+                    title title,
+                    type type,
+                    status 'todo',
+                    createdAt new Date().toISOString()
+                };
+                state.tasks.push(newTask);
+                saveState();
+                renderTasks();
+                closeTaskModal();
+                document.getElementById('newTaskTitle').value = '';
+            }
+        }
+
+        function allowDrop(ev) { ev.preventDefault(); }
+
+        function drag(ev) {
+            ev.dataTransfer.setData(text, ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            const taskId = ev.dataTransfer.getData(text);
+            const newStatus = ev.target.id.replace('col-', '');
+            
+             Si el drop no es en la columna sino en un hijo, buscar el padre col
+            let target = ev.target;
+            while (target && !target.id.startsWith('col-')) {
+                target = target.parentElement;
+            }
+            
+            if (target) {
+                const status = target.id.replace('col-', '');
+                const task = state.tasks.find(t = t.id === taskId);
+                if (task) {
+                    task.status = status;
+                    saveState();
+                    renderTasks();
+                }
+            }
+        }
+
+        function renderTasks() {
+            const cols = {
+                todo document.getElementById('col-todo'),
+                doing document.getElementById('col-doing'),
+                done document.getElementById('col-done')
+            };
+
+             Limpiar columnas
+            Object.values(cols).forEach(c = c.innerHTML = '');
+
+            state.tasks.forEach(task = {
+                const card = document.createElement('div');
+                card.id = task.id;
+                card.draggable = true;
+                card.ondragstart = drag;
+                card.className = `card-task bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-2 relative group`;
+                
+                let typeColor = 'bg-slate-100 text-slate-500';
+                if(task.type === 'cobro') typeColor = 'bg-red-100 text-red-600';
+                if(task.type === 'legal') typeColor = 'bg-emerald-100 text-emerald-600';
+                if(task.type === 'temporal') typeColor = 'bg-indigo-100 text-indigo-600';
+
+                card.innerHTML = `
+                    div class=flex justify-between items-start
+                        span class=text-[10px] font-black uppercase tracking-tighter px-2 py-0.5 rounded-full ${typeColor}${task.type}span
+                        button onclick=deleteTask('${task.id}') class=text-slate-300 hovertext-red-500 opacity-0 group-hoveropacity-100 transitioni class=fas fa-times-circleibutton
+                    div
+                    p class=text-sm font-semibold text-slate-700${task.title}p
+                `;
+                
+                if(cols[task.status]) cols[task.status].appendChild(card);
+            });
+
+             Actualizar contadores
+            document.getElementById('count-todo').innerText = state.tasks.filter(t = t.status === 'todo').length;
+            document.getElementById('count-doing').innerText = state.tasks.filter(t = t.status === 'doing').length;
+            document.getElementById('count-done').innerText = state.tasks.filter(t = t.status === 'done').length;
+            document.getElementById('taskCount').innerText = state.tasks.filter(t = t.status !== 'done').length;
+        }
+
+        function deleteTask(id) {
+            state.tasks = state.tasks.filter(t = t.id !== id);
+            saveState();
+            renderTasks();
+        }
+
+         --- GESTIÓN FINANCIERA ---
+        function addFinanceRecord() {
+            const entidad = document.getElementById('fin-entidad').value;
+            const monto = document.getElementById('fin-monto').value;
+
+            if (entidad && monto) {
+                state.finances.push({
+                    id Date.now(),
+                    entidad entidad,
+                    monto parseFloat(monto)
+                });
+                document.getElementById('fin-entidad').value = '';
+                document.getElementById('fin-monto').value = '';
+                saveState();
+                renderFinances();
+            }
+        }
+
+        function renderFinances() {
+            const list = document.getElementById('financeList');
+            list.innerHTML = '';
+            let total = 0;
+
+            state.finances.forEach(item = {
+                total += item.monto;
+                list.innerHTML += `
+                    div class=flex justify-between items-center p-3 bg-white border rounded-xl shadow-sm
+                        span class=text-sm font-bold text-slate-700${item.entidad}span
+                        div class=flex items-center gap-3
+                            span class=font-mono font-bold text-slate-600$ ${item.monto.toLocaleString()}span
+                            button onclick=deleteFinance(${item.id}) class=text-slate-300 hovertext-red-500i class=fas fa-trash text-xsibutton
+                        div
+                    div
+                `;
+            });
+
+            document.getElementById('financeTotal').innerText = `$ ${total.toLocaleString()}`;
+        }
+
+        function deleteFinance(id) {
+            state.finances = state.finances.filter(f = f.id !== id);
+            saveState();
+            renderFinances();
+        }
+
+         --- ACTUALIZACIÓN DE DASHBOARD ---
+        function updateDashboardUI() {
+            const now = new Date();
+            const day = now.getDate();
+            const weekday = now.getDay();  0 Dom, 1 Lun... 4 Jue, 5 Vie
+
+             Progreso del mes
+            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const percent = Math.round((day  lastDay)  100);
+            
+            document.getElementById('monthDayDisplay').innerText = `Día ${day}`;
+            document.getElementById('monthPercent').innerText = `${percent}%`;
+            document.getElementById('monthProgressBar').style.width = `${percent}%`;
+
+             Alerta Día 10
+            const day10 = new Date(now.getFullYear(), now.getMonth(), 10);
+            const alertZone = document.getElementById('alertZone');
+            if (day = 8 && day = 10 && (day10.getDay() === 0  day10.getDay() === 6)) {
+                alertZone.classList.remove('hidden');
+            } else {
+                alertZone.classList.add('hidden');
+            }
+
+             Status DINAPI
+            const dinapiCard = document.getElementById('dinapiStatusCard');
+            if (weekday === 4) {
+                dinapiCard.innerHTML = `i class=fas fa-search text-2xl mr-3 text-emerald-500ispan class=font-bold text-emerald-700 animate-bounceAuditoría Hoyspan`;
+            } else if (weekday === 5) {
+                dinapiCard.innerHTML = `i class=fas fa-file-export text-2xl mr-3 text-blue-500ispan class=font-bold text-blue-700Ingresos Hoyspan`;
+            }
+
+             Status Temporal
+            const temporalCard = document.getElementById('temporalStatusCard');
+            if (weekday === 2  weekday === 5) {
+                temporalCard.innerHTML = `i class=fas fa-clipboard-check text-2xl mr-3 text-indigo-500ispan class=font-bold text-indigo-700Auditoría 1500 hsspan`;
+            }
+        }
+
+         --- PERSISTENCIA ---
+        function saveState() {
+            localStorage.setItem('inmoOps_tasks', JSON.stringify(state.tasks));
+            localStorage.setItem('inmoOps_finances', JSON.stringify(state.finances));
+        }
+
+         --- INICIO ---
+        window.onload = () = {
+            initDashboard();  Lógica de fechas heredada
+            updateDashboardUI();
+            renderTasks();
+            renderFinances();
+            updateClock();
+        };
+
+         Función heredada y adaptada para compatibilidad
+        function initDashboard() {
+            const now = new Date();
+             Esto solo asegura que el script antiguo no rompa la ejecución
+        }
+
+    script
+body
+HTML
